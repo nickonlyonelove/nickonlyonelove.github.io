@@ -3,42 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROYALE ENGLISH</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>Красивые социальные иконки</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e8c8c3;
+            --hover-color: #d4a9a3;
+            --icon-size: 40px;
+            --tooltip-color: #333;
+            --animation-speed: 0.4s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 200vh; /* Для демонстрации скролла */
+        }
+
+        /* Основной контейнер соц. иконок */
+        .social-floating {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translate(100%, -50%);
+            z-index: 1000;
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            will-change: transform;
+        }
+
+        /* Активация при загрузке и скролле */
+        body.loaded .social-floating,
+        body.scrolled .social-floating {
+            transform: translate(0, -50%);
+        }
+
+        /* Кнопка активации */
+        .social-trigger {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 10px 0 0 10px;
+            box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all var(--animation-speed);
+            z-index: 2;
+        }
+
+        .social-trigger:hover {
+            background: var(--hover-color);
+            transform: scale(1.05);
+        }
+
+        /* Контейнер иконок */
+        .social-container {
+            background: white;
+            padding: 15px 10px;
+            border-radius: 10px 0 0 10px;
+            box-shadow: -3px 3px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-right: -20px;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all var(--animation-speed) 0.1s;
+        }
+
+        .social-floating.active .social-container {
+            opacity: 1;
+            transform: translateX(0);
+            margin-right: 0;
+        }
+
+        /* Стили отдельных иконок */
+        .social-icon {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .social-icon i {
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        /* Индивидуальные цвета для каждой сети */
+        .social-icon.vk { background: #4a76a8; }
+        .social-icon.telegram { background: #2AABEE; }
+        .social-icon.whatsapp { background: #25D366; }
+        .social-icon.instagram { 
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+        }
+        .social-icon.youtube { background: #FF0000; }
+
+        /* Эффекты при наведении */
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-icon:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Подсказки */
+        .social-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            right: calc(100% + 15px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--tooltip-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .social-icon:hover::after {
+            opacity: 1;
+            right: calc(100% + 10px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            :root {
+                --icon-size: 35px;
+            }
+            
+            .social-floating {
+                top: auto;
+                bottom: 20px;
+                transform: translate(100%, 0);
+            }
+            
+            body.loaded .social-floating,
+            body.scrolled .social-floating {
+                transform: translate(0, 0);
+            }
+            
+            .social-container {
+                flex-direction: row;
+                border-radius: 10px 10px 0 0;
+                padding: 10px 15px;
+                margin-right: 0;
+                margin-bottom: -20px;
+                transform: translateY(20px);
+            }
+            
+            .social-floating.active .social-container {
+                transform: translateY(0);
+            }
+            
+            .social-trigger {
+                display: none;
+            }
+            
+            .social-floating {
+                transform: translate(0, 0) !important;
+                opacity: 1 !important;
+                right: 20px;
+                bottom: 20px;
+                top: auto;
+            }
+            
+            .social-icon::after {
+                top: auto;
+                bottom: 100%;
+                right: 50%;
+                transform: translateX(50%);
+            }
+            
+            .social-icon:hover::after {
+                bottom: calc(100% + 5px);
+                right: 50%;
+            }
+        }
+
+        /* Анимация пульсации для триггера */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .social-trigger.pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html" class="nav-logo">ENGLISH ROYALE</a>
-        <div class="nav-links">
-            <a href="index.html">Главная</a>
-            <a href="about.html">О нас</a>
-        </div>
-    </nav>
-
-    <div class="content">
-        <h1>Добро пожаловать в школу английского языка ROYALE ENGLISH!</h1>
-        <p>Наши основные принципы:
-        Качество образования: Мы уделяем особое внимание разработке персонализированных курсов, соответствующих уровню и целям каждого студента. Это позволяет каждому ученику прогрессировать в своем темпе, достигая максимальных результатов
-Инновационные методы обучения: В нашей школе мы используем современные онлайн-платформы, мобильные приложения и интерактивные материалы, что делает процесс обучения удобным и эффективным. Мы стремимся к тому, чтобы каждый урок приносил удовольствие и вдохновение.
-Гибкость и доступность: Мы предлагаем разнообразные форматы занятий, включая вечерние курсы, занятия в выходные и онлайн-уроки. Это позволяет каждому студенту выбрать наиболее удобный график обучения без ущерба для качества.
-Акцент на практику: В нашей школе мы делаем упор на практическую часть обучения.
-Разговорная практика занимает центральное место на каждом уроке, что способствует уверенности студентов и улучшению их навыков общения на английском языке.</p>
-    </div>
-
+    <!-- Плавающие социальные иконки -->
     <div class="social-floating">
-        <button class="social-button">
+        <div class="social-trigger pulse">
             <i class="fas fa-share-alt"></i>
-        </button>
-        
-        <div class="social-links">
-            <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-link" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="social-container">
+            <a href="#" class="social-icon vk" data-tooltip="ВКонтакте">
+                <i class="fab fa-vk"></i>
+            </a>
+            <a href="#" class="social-icon telegram" data-tooltip="Telegram">
+                <i class="fab fa-telegram-plane"></i>
+            </a>
+            <a href="#" class="social-icon whatsapp" data-tooltip="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="#" class="social-icon instagram" data-tooltip="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="social-icon youtube" data-tooltip="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Активация после загрузки страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('loaded');
+            
+            // Активация при скролле
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    document.body.classList.add('scrolled');
+                } else {
+                    document.body.classList.remove('scrolled');
+                }
+            });
+            
+            // Переключение видимости иконок
+            const trigger = document.querySelector('.social-trigger');
+            trigger.addEventListener('click', function() {
+                document.querySelector('.social-floating').classList.toggle('active');
+                this.classList.toggle('pulse');
+            });
+            
+            // Автоматическое скрытие на мобильных
+            if (window.innerWidth <= 768) {
+                document.querySelector('.social-floating').classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>
