@@ -3,266 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Красивые социальные иконки</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Моя компания</title>
     <style>
-        :root {
-            --primary-color: #e8c8c3;
-            --hover-color: #d4a9a3;
-            --icon-size: 40px;
-            --tooltip-color: #333;
-            --animation-speed: 0.4s;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Arial', sans-serif;
-            min-height: 200vh; /* Для демонстрации скролла */
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
         }
-
-        /* Основной контейнер соц. иконок */
-        .social-floating {
-            position: fixed;
-            right: 0;
-            top: 50%;
-            transform: translate(100%, -50%);
-            z-index: 1000;
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            will-change: transform;
-        }
-
-        /* Активация при загрузке и скролле */
-        body.loaded .social-floating,
-        body.scrolled .social-floating {
-            transform: translate(0, -50%);
-        }
-
-        /* Кнопка активации */
-        .social-trigger {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-color);
+        
+        header {
+            background-color: #4a6fa5;
             color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        
+        nav {
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            border-radius: 10px 0 0 10px;
-            box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.1);
-            transition: all var(--animation-speed);
-            z-index: 2;
+            background-color: #3a5a8a;
         }
-
-        .social-trigger:hover {
-            background: var(--hover-color);
-            transform: scale(1.05);
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            transition: background-color 0.3s;
         }
-
-        /* Контейнер иконок */
-        .social-container {
-            background: white;
-            padding: 15px 10px;
-            border-radius: 10px 0 0 10px;
-            box-shadow: -3px 3px 15px rgba(0, 0, 0, 0.1);
+        
+        nav a:hover {
+            background-color: #2c4368;
+        }
+        
+        .active {
+            background-color: #2c4368;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .company-name {
+            font-size: 2.5rem;
+            color: #4a6fa5;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .about-text {
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+        
+        .gallery {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .gallery img {
+            max-width: 45%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+        
+        .price-list {
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .price-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .price-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .price-title {
+            font-size: 1.3rem;
+            color: #4a6fa5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .price-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .social-links {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-right: -20px;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: all var(--animation-speed) 0.1s;
+            z-index: 100;
         }
-
-        .social-floating.active .social-container {
-            opacity: 1;
-            transform: translateX(0);
-            margin-right: 0;
-        }
-
-        /* Стили отдельных иконок */
-        .social-icon {
-            width: var(--icon-size);
-            height: var(--icon-size);
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            transition: all 0.3s;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .social-icon i {
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-
-        /* Индивидуальные цвета для каждой сети */
-        .social-icon.vk { background: #4a76a8; }
-        .social-icon.telegram { background: #2AABEE; }
-        .social-icon.whatsapp { background: #25D366; }
-        .social-icon.instagram { 
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-        }
-        .social-icon.youtube { background: #FF0000; }
-
-        /* Эффекты при наведении */
-        .social-icon:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .social-icon:hover i {
-            transform: scale(1.2);
-        }
-
-        /* Подсказки */
-        .social-icon::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            right: calc(100% + 15px);
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--tooltip-color);
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
+            font-size: 24px;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
             opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s;
-            white-space: nowrap;
+            transform: translateY(20px);
         }
-
-        .social-icon:hover::after {
+        
+        .social-link.visible {
             opacity: 1;
-            right: calc(100% + 10px);
+            transform: translateY(0);
         }
-
-        /* Адаптивность */
+        
+        .social-link:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .telegram {
+            background-color: #0088cc;
+            animation-delay: 0.1s;
+        }
+        
+        .whatsapp {
+            background-color: #25D366;
+            animation-delay: 0.2s;
+        }
+        
+        .instagram {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
+            animation-delay: 0.3s;
+        }
+        
+        .phone {
+            background-color: #4a6fa5;
+            animation-delay: 0.4s;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        
         @media (max-width: 768px) {
-            :root {
-                --icon-size: 35px;
+            .gallery img {
+                max-width: 100%;
             }
             
-            .social-floating {
-                top: auto;
-                bottom: 20px;
-                transform: translate(100%, 0);
+            nav {
+                flex-direction: column;
+                align-items: center;
             }
             
-            body.loaded .social-floating,
-            body.scrolled .social-floating {
-                transform: translate(0, 0);
+            nav a {
+                width: 100%;
+                text-align: center;
             }
-            
-            .social-container {
-                flex-direction: row;
-                border-radius: 10px 10px 0 0;
-                padding: 10px 15px;
-                margin-right: 0;
-                margin-bottom: -20px;
-                transform: translateY(20px);
-            }
-            
-            .social-floating.active .social-container {
-                transform: translateY(0);
-            }
-            
-            .social-trigger {
-                display: none;
-            }
-            
-            .social-floating {
-                transform: translate(0, 0) !important;
-                opacity: 1 !important;
-                right: 20px;
-                bottom: 20px;
-                top: auto;
-            }
-            
-            .social-icon::after {
-                top: auto;
-                bottom: 100%;
-                right: 50%;
-                transform: translateX(50%);
-            }
-            
-            .social-icon:hover::after {
-                bottom: calc(100% + 5px);
-                right: 50%;
-            }
-        }
-
-        /* Анимация пульсации для триггера */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .social-trigger.pulse {
-            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Плавающие социальные иконки -->
-    <div class="social-floating">
-        <div class="social-trigger pulse">
-            <i class="fas fa-share-alt"></i>
+    <header>
+        <h1>Моя компания</h1>
+    </header>
+    
+    <nav>
+        <a href="#" class="tab-link active" data-tab="home">Главная</a>
+        <a href="#" class="tab-link" data-tab="prices">Цены</a>
+    </nav>
+    
+    <div id="home" class="tab-content active">
+        <div class="company-name">Название вашей компании</div>
+        
+        <div class="about-text">
+            <p>Добро пожаловать на сайт нашей компании! Мы занимаемся предоставлением высококачественных услуг уже более 10 лет. Наша команда состоит из профессионалов своего дела, которые всегда готовы помочь вам в решении любых задач.</p>
+            
+            <p>Мы гордимся тем, что предлагаем индивидуальный подход к каждому клиенту и гарантируем отличный результат. Наши ценности - это качество, надежность и инновации.</p>
+            
+            <p>Свяжитесь с нами сегодня, чтобы узнать больше о том, как мы можем помочь вам достичь ваших целей!</p>
         </div>
-        <div class="social-container">
-            <a href="#" class="social-icon vk" data-tooltip="ВКонтакте">
-                <i class="fab fa-vk"></i>
-            </a>
-            <a href="#" class="social-icon telegram" data-tooltip="Telegram">
-                <i class="fab fa-telegram-plane"></i>
-            </a>
-            <a href="#" class="social-icon whatsapp" data-tooltip="WhatsApp">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="#" class="social-icon instagram" data-tooltip="Instagram">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="social-icon youtube" data-tooltip="YouTube">
-                <i class="fab fa-youtube"></i>
-            </a>
+        
+        <div class="gallery">
+            <img src="https://via.placeholder.com/600x400?text=Наша+команда" alt="Наша команда">
+            <img src="https://via.placeholder.com/600x400?text=Наши+проекты" alt="Наши проекты">
         </div>
     </div>
-
-    <script>
-        // Активация после загрузки страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.classList.add('loaded');
+    
+    <div id="prices" class="tab-content">
+        <h2>Наши цены</h2>
+        
+        <div class="price-list">
+            <div class="price-item">
+                <div class="price-title">Базовый пакет</div>
+                <div class="price-value">5 000 руб.</div>
+                <div class="price-description">Идеально подходит для небольших проектов и стартапов. Включает основные услуги и консультацию.</div>
+            </div>
             
-            // Активация при скролле
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 100) {
-                    document.body.classList.add('scrolled');
-                } else {
-                    document.body.classList.remove('scrolled');
+            <div class="price-item">
+                <div class="price-title">Стандартный пакет</div>
+                <div class="price-value">10 000 руб.</div>
+                <div class="price-description">Наиболее популярный вариант. Включает расширенный набор услуг и индивидуальный подход.</div>
+            </div>
+            
+            <div class="price-item">
+                <div class="price-title">Премиум пакет</div>
+                <div class="price-value">20 000 руб.</div>
+                <div class="price-description">Полный комплекс услуг с приоритетным обслуживанием и эксклюзивными решениями.</div>
+            </div>
+            
+            <div class="price-item">
+                <div class="price-title">Индивидуальное решение</div>
+                <div class="price-value">По договоренности</div>
+                <div class="price-description">Специально разработанный пакет услуг, учитывающий все ваши потребности и особенности проекта.</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 2rem; text-align: center; font-style: italic;">
+            * Все цены указаны без учета НДС. Возможны индивидуальные скидки для постоянных клиентов и крупных проектов.
+        </p>
+    </div>
+    
+    <div class="social-links">
+        <a href="https://t.me/ваш_телеграм" class="social-link telegram" target="_blank">✈</a>
+        <a href="https://wa.me/79991234567" class="social-link whatsapp" target="_blank">✆</a>
+        <a href="https://instagram.com/ваш_инстаграм" class="social-link instagram" target="_blank">📷</a>
+        <a href="tel:+79991234567" class="social-link phone">☎</a>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Моя компания. Все права защищены.</p>
+    </footer>
+    
+    <script>
+        // Переключение между вкладками
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Удаляем активный класс у всех ссылок и вкладок
+                document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                
+                // Добавляем активный класс к текущей ссылке
+                this.classList.add('active');
+                
+                // Показываем соответствующую вкладку
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Анимация появления соцсетей
+        document.addEventListener('DOMContentLoaded', function() {
+            const socialLinks = document.querySelectorAll('.social-link');
+            
+            socialLinks.forEach((link, index) => {
+                setTimeout(() => {
+                    link.classList.add('visible');
+                }, index * 200 + 500);
+            });
+        });
+        
+        // Плавная прокрутка при переходе по якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 }
             });
-            
-            // Переключение видимости иконок
-            const trigger = document.querySelector('.social-trigger');
-            trigger.addEventListener('click', function() {
-                document.querySelector('.social-floating').classList.toggle('active');
-                this.classList.toggle('pulse');
-            });
-            
-            // Автоматическое скрытие на мобильных
-            if (window.innerWidth <= 768) {
-                document.querySelector('.social-floating').classList.add('active');
-            }
         });
     </script>
 </body>
